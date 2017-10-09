@@ -1,1 +1,1 @@
-web: sh build_and_run.sh
+web: node server.js
