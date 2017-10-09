@@ -1,1 +1,1 @@
-web: json-server --watch db.json
+web: sh build_and_run.sh
