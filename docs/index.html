@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meal Generator</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap: Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Bootstrap: Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Bootstrap: Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Styling for loading spinner -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+    header {
+
+    }
+    body {
+        margin-top: 10px;
+        padding-left: 20px;
+        padding-right: : 20px;
+    }
+
+    /* spinner icon */
+    .fa {
+        margin-left: 0px;
+        margin-right: 8px;
+    }
+
+    .btn-halfsize {
+        width: 50%;
+    }
+
+    .btn {
+        margin-bottom: 1px;
+        border-width: : 2px;
+        display: block;
+        height: 200px;
+    }
+
+    .header {
+        font-size: 65pt;
+        height: 100px;
+    }
+
+    .footer-buttons {
+        padding-left: 20px;
+        padding-right: 20px;
+        height: 100px;
+        width: 100%;
+    }
+
+    </style>
+</head>
+<body onload="pullDb()">
+    
+    <!-- HEADER -->
+    <div class="container-fluid">
+        <h1 class="header">
+            Meal Generator
+            <!-- TODO: Admin view and such... -->
+        </h1>
+    </div>
+    
+
+    <!-- BODY -->
+    <div class="container-fluid">
+        <div class="protein-btn">
+            <button type="button" id="protein-id" class="btn btn-secondary btn-lg btn-block border border-primary" onclick="updateProtein()">
+                Protein
+            </button>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="base-btn">
+            <button type="button" id="base-id" class="btn btn-secondary btn-lg btn-block border border-success" onclick="updateBase()">
+                Base
+            </button>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="basemod-btn">
+            <button type="button" id="basemod-id" class="btn btn-secondary btn-lg btn-block border border-danger" onclick="updateBasemod()">
+                Basemod
+            </button>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="side-btn">
+            <button type="button" id="side-id" class="btn btn-secondary btn-lg btn-block border border-warning" onclick="updateSide()">
+                Side
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER: SHARE TO NOTES & REFRESH WHOLE THING -->
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="btn-group footer-buttons" role="group">
+                <button type="button" id="share-id" class="btn btn-secondary btn-lg btn-halfsize" onclick="share()">
+                    Share
+                </button>
+                <button type="button" id="refresh-id" class="btn btn-secondary btn-lg btn-halfsize" onclick="refresh()">
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var db = {}
+
+        function pullDb()
+        {
+            $.get( "https://meal-generator-api.herokuapp.com/db", function( data ) {
+                db = data["meal-generator"]
+            });
+        }
+
+        function startup()
+        {
+            pullDb()
+
+            // Update individual things
+            updateProtein()
+            updateBase()
+            updateBasemod()
+            updateSide()
+        }
+
+        function getNewItemFromCategory(item)
+        {
+            var currentItem = item
+            // Don't select the same item again:
+            item = db[item][Math.floor(Math.random() * db[item].length)]["name"]
+            if (currentItem == item) {
+                getNewItemFromCategory(item)
+            }
+            return item
+        }
+
+        function updateProtein()
+        {
+            $("#protein-id").text(getNewItemFromCategory("protein"))
+        }
+
+        function updateBase()
+        {
+            $("#base-id").html(getNewItemFromCategory("base"))
+        }
+
+        function updateBasemod()
+        {
+            $("#basemod-id").html(getNewItemFromCategory("basemod"))
+        }
+
+        function updateSide()
+        {
+            $("#side-id").html(getNewItemFromCategory("side"))
+        }
+
+        function share()
+        {
+            console.log("Share - NOT IMPLEMENTED")
+        }
+
+        function refresh()
+        {
+            console.log("Refresh")
+            pullDb()
+        }
+    </script>
+</body>
+</html>
